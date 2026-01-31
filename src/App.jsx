@@ -3,7 +3,7 @@ import axios from 'axios';
 import ForceGraph from 'force-graph';
 
 // Render'dan aldığın backend linkini buraya yapıştır (sonunda /api olmasın)
-const API_BASE_URL = "https://estu-portal-backend.onrender.com"; 
+const API_BASE_URL = "https://eu-portal-backend.onrender.com"; 
 
 const api = axios.create({ 
     baseURL: API_BASE_URL + "/api",
