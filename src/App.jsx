@@ -738,7 +738,10 @@ const AdminDashboard = ({ onSelectUser, onLogout }) => {
             setLoad(false);
         });
         if (viewMode === "messages") {
-            api.post('/messages/', { action: 'list', role: 'admin' }).then(r => setAllMessages(r.data));
+            // DÜZELTME: Backend 'user' parametresine bakıyor. 'user: "admin"' ekledik.
+            api.post('/messages/', { action: 'list', user: 'admin' })
+               .then(r => setAllMessages(r.data || [])) // Boş gelirse hata vermesin diye || [] ekledik
+               .catch(err => console.log(err));
         }
     };
 
@@ -850,10 +853,16 @@ const AdminDashboard = ({ onSelectUser, onLogout }) => {
                                 <tbody>
                                     {data.logs && data.logs.map((log, idx) => (
                                         <tr key={idx} className="hover:bg-slate-50 text-sm transition border-b last:border-0 border-slate-100">
-                                            <td className="p-4 text-slate-500 font-mono text-xs">{log.timestamp}</td>
-                                            <td className="p-4 font-bold text-slate-700">{log.name}</td>
-                                            <td className="p-4"><span className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs border">{log.role}</span></td>
-                                            <td className="p-4"><span className={`px-2 py-1 rounded text-xs font-bold ${log.action.includes('Giriş') ? 'text-green-700 bg-green-50' : 'text-red-700 bg-red-50'}`}>{log.action}</span></td>
+                                            {/* Backend'den gelen Türkçe anahtarları kullanıyoruz */}
+                                            <td className="p-4 text-slate-500 font-mono text-xs">{log.Saat}</td>
+                                            <td className="p-4 font-bold text-slate-700">{log.Kullanıcı}</td>
+                                            <td className="p-4"><span className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs border">{log.Rol}</span></td>
+                                            <td className="p-4">
+                                                {/* ÇÖKME ÖNLEYİCİ: (log.İşlem || "") sayesinde veri boş gelse bile hata vermez */}
+                                                <span className={`px-2 py-1 rounded text-xs font-bold ${(log.İşlem || "").includes('Giriş') ? 'text-green-700 bg-green-50' : 'text-red-700 bg-red-50'}`}>
+                                                    {log.İşlem}
+                                                </span>
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
